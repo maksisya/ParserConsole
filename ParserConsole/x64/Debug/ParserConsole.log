@@ -1,0 +1,6 @@
+﻿  ParserConsole.cpp
+D:\Проекты VS\ParserConsole\ParserConsole\ParserConsole.cpp(235,5): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+D:\Проекты VS\ParserConsole\ParserConsole\ParserConsole.cpp(318,42): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+D:\Проекты VS\ParserConsole\ParserConsole\ParserConsole.cpp(334,26): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+D:\Проекты VS\ParserConsole\ParserConsole\ParserConsole.cpp(367,55): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+  ParserConsole.vcxproj -> D:\Проекты VS\ParserConsole\x64\Debug\ParserConsole.exe

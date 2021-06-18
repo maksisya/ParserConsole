@@ -1,5 +1,5 @@
 ﻿  ParserConsole.cpp
-D:\Проекты VS\ParserConsole\ParserConsole\ParserConsole.cpp(242,23): warning C4018: <: несоответствие типов со знаком и без знака
-D:\Проекты VS\ParserConsole\ParserConsole\ParserConsole.cpp(282,35): warning C4244: =: преобразование "double" в "float", возможна потеря данных
-D:\Проекты VS\ParserConsole\ParserConsole\ParserConsole.cpp(298,26): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+D:\Проекты VS\ParserConsole\ParserConsole\ParserConsole.cpp(278,23): warning C4018: <: несоответствие типов со знаком и без знака
+D:\Проекты VS\ParserConsole\ParserConsole\ParserConsole.cpp(318,42): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+D:\Проекты VS\ParserConsole\ParserConsole\ParserConsole.cpp(334,26): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
   ParserConsole.vcxproj -> D:\Проекты VS\ParserConsole\Debug\ParserConsole.exe

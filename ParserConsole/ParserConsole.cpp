@@ -15,52 +15,52 @@ using namespace std;
 * дробь.
 */
 
-void func(double num, double eps, int& ch, int& zn)
+void Decimal_To_Fraction(double number, double eps, int& numerator, int& denominator)
 {
-    int a = 1; int b = 1;
-    int mn = 2; // множитель для начального приближения
-    int iter = 0;
-    ch = a; zn = b;
+    int temp_numerator = 1; int temp_denominator = 1; // начальный числитель и знаменатель
+    int factor = 2; // множитель для начального приближения
+    int iter = 0; // итератор
+    numerator = temp_numerator; denominator = temp_denominator;
     // Поиск начального приближения
-    double c = 1;
+    double first_approximation = 1; // приближение
     do {
-        b++;
-        c = (double)a / b;
-    } while ((num - c) < 0);
-    if ((num - c) < eps)
+        temp_denominator++;
+        first_approximation = (double)temp_numerator / temp_denominator;
+    } while ((number - first_approximation) < 0);
+    if ((number - first_approximation) < eps)
     {
-        ch = a; zn = b;
+        numerator = temp_numerator; denominator = temp_denominator;
         return;
     }
-    b--;
-    c = (double)a / b;
-    if ((num - c) > -eps)
+    temp_denominator--;
+    first_approximation = (double)temp_numerator / temp_denominator;
+    if ((number - first_approximation) > -eps)
     {
-        ch = a; zn = b;
+        numerator = temp_numerator; denominator = temp_denominator;
         return;
     }
     // Уточнение
     while (iter < 20000)
     {
-        int cc = a * mn, zz = b * mn;
+        int second_approximation = temp_numerator * factor, refined_denominator = temp_denominator * factor;
         iter++;
         do {
-            zz++;
-            c = (double)cc / zz;
-        } while ((num - c) < 0);
-        if ((num - c) < eps)
+            refined_denominator++;
+            first_approximation = (double)second_approximation / refined_denominator;
+        } while ((number - first_approximation) < 0);
+        if ((number - first_approximation) < eps)
         {
-            ch = cc; zn = zz;
+            numerator = second_approximation; denominator = refined_denominator;
             return;
         }
-        zz--;
-        c = (double)cc / zz;
-        if ((num - c) > -eps)
+        refined_denominator--;
+        first_approximation = (double)second_approximation / refined_denominator;
+        if ((number - first_approximation) > -eps)
         {
-            ch = cc; zn = zz;
+            numerator = second_approximation; denominator = refined_denominator;
             return;
         }
-        mn++;
+        factor++;
     }
 }
 
@@ -83,10 +83,10 @@ bool IsOperand(char symbol)
 * \brief Функция для генерации обратной польской записи из изходного выражения
 * 
 * В данной функции реализован алгоритм преобразования записанного математического выражения
-* в обратную польскую запись, для дальнейшего его решения с помощью функции calculate().
+* в обратную польскую запись, для дальнейшего его решения с помощью функции Calculate_OPZ().
 */
 
-string getOPZ(string viraj, deque<char> &d1)
+string Get_OPZ(string viraj, deque<char> &d1)
 {
     string OPZ;
     if (viraj[0] == '-')
@@ -232,7 +232,7 @@ string getOPZ(string viraj, deque<char> &d1)
     {
         OPZ.erase(OPZ.length() - 1);
     }
-    for (unsigned int i = d1.size() - 1; i > 0; i--)
+    for (int i = d1.size() - 1; i > 0; i--)
     {
         OPZ += d1[i];
     }
@@ -247,19 +247,19 @@ string getOPZ(string viraj, deque<char> &d1)
 * будет чётным, и число будет отрицательным - функция вернёт INF.
 */
 
-double cuberoot(double a, double zn, double b)
+double Extract_Root(double value1, double denominator, double value2)
 {
-    if ((int)zn % 2 == 0 && a < 0) //если знаменатель чётный и число отрицательное
+    if ((int)denominator % 2 == 0 && value1 < 0) //если знаменатель чётный и число отрицательное
     {
         return INFINITY;
     }
-    else if (a < 0 && int(zn) % 2 != 0) // если число отрицательное и знаменатель нечётный
+    else if (value1 < 0 && int(denominator) % 2 != 0) // если число отрицательное и знаменатель нечётный
     {
-        return -pow(-a, b);
+        return -pow(-value1, value2);
     }
-    else if (a > 0) // если число положительное то без разницы какой будет знаменатель
+    else if (value1 > 0) // если число положительное то без разницы какой будет знаменатель
     {
-        return pow(a, b);
+        return pow(value1, value2);
     }
     return INFINITY;
 }
@@ -271,9 +271,9 @@ double cuberoot(double a, double zn, double b)
 * для получения ответа при решении математического выражения
 */
 
-float calculate(string stroka, stack<float> &stk)
+float Calculate_OPZ(string stroka, stack<float> &stk)
 {
-    float v1, v2, res;
+    float value1, value2, result;
     double eps = 0.0000001;
     for (int i = 0; i < stroka.length(); i++) 
     {
@@ -288,40 +288,40 @@ float calculate(string stroka, stack<float> &stk)
         if (stk.size() >= 2 && (stroka[j] == '+' || stroka[j] == '-' || stroka[j] == '*'
             || stroka[j] == '/' || stroka[j] == '^'))
         {
-            v2 = stk.top();
+            value2 = stk.top();
             stk.pop();
-            v1 = stk.top();
+            value1 = stk.top();
             stk.pop();
             switch (stroka[i])
             {
-            case '+': res = v1 + v2;
+            case '+': result = value1 + value2;
                 break;
-            case '-': res = v1 - v2;
+            case '-': result = value1 - value2;
                 break;
-            case '*': res = v1 * v2;
+            case '*': result = value1 * value2;
                 break;
-            case '/': res = v1 / v2;
+            case '/': result = value1 / value2;
                 break;
             case '^': 
-                if (v2 >= 1)
+                if (value2 >= 1) // если значение степени больше или равно еденице
                 {
-                    res = pow(v1, v2);
+                    result = pow(value1, value2); // просто возводим в степень
                 }
-                else if (v2 < 0)
+                else if (value2 < 0) // если значение степени меньше нуля
                 {
-                    res = pow(v1, v2);
+                    result = pow(value1, value2); // просто возводим в степень
                 }
-                else
+                else // в любых других случаях переводим полученое десятичное число в обыкновенную дробь
                 {
-                    int ch, zn;
-                    func(v2, eps, ch, zn); // функция нахождения знаменателя обыкновенной дроби
-                    res = cuberoot(v1, zn, v2);
+                    int numerator, denominator; // числитель, знаменатель
+                    Decimal_To_Fraction(value2, eps, numerator, denominator); // функция нахождения знаменателя обыкновенной дроби
+                    result = Extract_Root(value1, denominator, value2);
                 }
                 break;
             default:
                 break;
             }
-            stk.push(res);
+            stk.push(result);
             i = j + 1;
             continue;
         }
@@ -351,27 +351,27 @@ int main()
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
 
-    string ishod_virajenie, temp_str;
+    string original_expression, temp_string;
     deque<char> d1;
     
     cout << "Введите выражение: "; // отрицательные степени
-    getline(cin, ishod_virajenie);
-    temp_str = ishod_virajenie;    // посчитать сначала исключение со степенью, потом все выражение 
-    int pos = 0;
-    while (temp_str.find('(', pos) != -1) // вставляем нули перед минусами для корректного подсчёта
+    getline(cin, original_expression);
+    temp_string = original_expression;    // посчитать сначала исключение со степенью, потом все выражение 
+    int position = 0;
+    while (temp_string.find('(', position) != -1) // вставляем нули перед минусами для корректного подсчёта
     {
-        if (temp_str[temp_str.find('(', pos) + 1] == '-')
+        if (temp_string[temp_string.find('(', position) + 1] == '-')
         {
-            temp_str.insert(temp_str.find('(', pos) + 1, "0");
+            temp_string.insert(temp_string.find('(', position) + 1, "0");
         }
-        pos = temp_str.find('(', pos) + 1;
+        position = temp_string.find('(', position) + 1;
     }
 
-    string result_opz = getOPZ(temp_str, d1);
+    string result_opz = Get_OPZ(temp_string, d1);
     stack<float> stk;
 
-    cout << "\n" << ishod_virajenie << " = ";
-    float result = calculate(result_opz, stk);
+    cout << "\n" << original_expression << " = ";
+    float result = Calculate_OPZ(result_opz, stk);
     if (result == INFINITY) 
     {
         cout << "Value error!" << endl;
