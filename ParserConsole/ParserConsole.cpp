@@ -380,6 +380,8 @@ int main()
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
 
+    system("title Parser");
+
     string original_expression, temp_string;
     deque<char> d1;
     
